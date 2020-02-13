@@ -126,3 +126,11 @@ dmypy.json
 # Databases
 
 databases/
+
+# Images
+*.hdf5
+*.bmp
+*.BMP
+*.tiff
+
+.idea/

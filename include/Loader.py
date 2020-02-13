@@ -1,70 +1,135 @@
-import cv2
 import numpy as np
+import cv2
+import h5py
+from typing import Tuple, List
+import math
+
 class Loader:
 	def __init__(
 		self,
-		database_file: str,
-		trajectory_file: str,
-	):
-		self.database_file = database_file + 'database.txt'
-		self.trajectory_file = trajectory_file
+		image_path: str,
+		resolution,
+		area_to_load
+		):
+		self.path = image_path
+		self.res  = resolution
+		self.area = area_to_load
+		self.current_corner = [0, 0]
 
-		with open(self.database_file) as f:
-			database = f.read().splitlines()
-		self.image_paths = [database_file + s for s in database[::2]]
-		self.image_transformations = [np.array(t.split(), np.float32()) for t in database[1::2]]
-		self.count = 0
+	def load(self, pose):
 
-		self.x_centers = [a[2] for a in self.image_transformations]
-		self.y_centers = [a[5] for a in self.image_transformations]
+		x, y, _ = pose
+		aw, ah = self.area
+
+		with h5py.File(self.path, 'r') as f:
+
+			print('shape', f['stitched'].shape)
+			xmax = f['stitched'].shape[0]
+			ymax = f['stitched'].shape[1]
+		print('max' , xmax, ymax)
+		if self.isInArea(pose, self.res):
+
+			return None
+		else:
+
+			with h5py.File(self.path, 'r') as f:
+
+				if int(x+aw//2) < xmax and int(y+ah//2) < ymax:
+
+					if int(x-aw//2) < 0:
+						if int(y - ah//2) < 0:
+							print('case 1')
+							self.current_corner = [0, 0]
+							image = f['stitched'][0:aw, 0:ah]
+						else:
+							print('case 2')
+							self.current_corner = [0, int(y-ah//2)]
+							image = f['stitched'][0:aw, int(y-ah//2):int(y+ah//2)]
+					else:
+						if int(y - ah//2) < 0:
+							print('case 3')
+							self.current_corner = [int(x-aw//2), 0]
+							image = f['stitched'][int(x-aw//2):int(x+aw//2), 0:ah]
+						else:
+							print('case 4')
+							self.current_corner = [x-aw//2, y-ah//2]
+							image = f['stitched'][int(x-aw//2):int(x+aw//2), int(y-ah//2):int(y+ah//2)]
+
+				elif int(x+aw//2) > xmax and int(y+ah//2) > ymax:
+					print('case 5')
+					self.current_corner = [0, 0]
+					image = f['stitched'][xmax-aw:xmax, ymax-ah:ymax]
+
+				elif int(x+aw//2) > xmax:
+					if int(y - ah//2) < 0:
+						print('case 6')
+						self.current_corner = [0, 0]
+						image = f['stitched'][xmax-aw:xmax, 0:ah]
+					else:
+						print('case 7')
+						self.current_corner = [0, 0]
+						image = f['stitched'][xmax-aw:xmax, int(y-ah//2):int(y+ah//2)]
+
+				else:
+					if int(x - aw//2) < 0:
+						print('case 8')
+						self.current_corner = [0, 0]
+						image = f['stitched'][0:aw, ymax-ah:ymax]
+					else:
+						print('case 9')
+						self.current_corner = [0, 0]
+						image = f['stitched'][int(x-aw//2):int(x+aw//2), ymax-ah:ymax]
 
 
-		self.max_x = max(self.x_centers)
-		self.max_y = max(self.y_centers)
+		return image
 
-		self.min_x = min(self.x_centers)
-		self.min_y = min(self.y_centers)
+	def isInArea(self, pose, resolution):
 
-		print(self.min_x)
+		x, y, _ = pose
+		h, w    = resolution
 
-	def __iter__(self):
-		return self
+		xmin = self.current_corner[0]
+		ymin = self.current_corner[1]
 
-	def __next__(self):
+		xmax = self.current_corner[0]+self.area[0]
+		ymax = self.current_corner[1]+self.area[1]
 
-		cv2.namedWindow('window1' , cv2.WINDOW_NORMAL)
+		points = []
 
-		h = self.max_y - self.min_y
-		w = self.max_x - self.min_x
+		points.append([x - w/2 * np.cos(alpha) - h/2 * np.sin(alpha), y + w/2 * np.sin(alpha) - h/2 * np.cos(alpha)])
+		points.append([x + w/2 * np.cos(alpha) - h/2 * np.sin(alpha), y - w/2 * np.sin(alpha) - h/2 * np.cos(alpha)])
+		points.append([x + w/2 * np.cos(alpha) + h/2 * np.sin(alpha), y - w/2 * np.sin(alpha) + h/2 * np.cos(alpha)])
+		points.append([x - w/2 * np.cos(alpha) + h/2 * np.sin(alpha), y + w/2 * np.sin(alpha) + h/2 * np.cos(alpha)])
 
-		print(h,w)
-		for i in range(len(self.image_paths)//2): 
-
-			im_src = cv2.imread(self.image_paths[i])
-			transform = self.image_transformations[i]
-			transform = np.reshape(transform, (-1,3))
-
-			transform[0,2]+=abs(self.min_x)
-			#transform[1,2]+=self.min_y
-			print(transform[0,2])
-
-			if i == 0:
-				im_dst = cv2.warpPerspective(im_src, np.float32(transform), (int(w//2), int(h)), borderMode=cv2.BORDER_TRANSPARENT)
+		for pt in points:
+			if xmin < pt[0] < xmax:
+				if ymin < pt[1] < ymax:
+					pass
+				else:
+					return False
 			else:
+				return False
 
-				im_dst = cv2.warpPerspective(im_src, np.float32(transform), (im_dst.shape[1], im_dst.shape[0]), im_dst, borderMode=cv2.BORDER_TRANSPARENT)
+		return True
 
+if __name__ == '__main__':
+	#Open with Loader
+	'''
+	loader = Loader('/home/laboratorio/simslam2d/stitched_tile.hdf5', (1000, 500), (1500, 1500))
+	for i in range(0, 100000, 1000):
+		print(i, i)
 
-			# Display images
-			cv2.imshow("window1", im_dst)
-			cv2.resizeWindow('window1', 1500,1500)
-			cv2.imshow("window1", im_dst)
-
-			cv2.waitKey(1)
-		cv2.waitKey(0)				 
-
-
-loader = Loader('/home/jfrvk/Documents/Simslam2D/databases/granite/', '')
-myiter = iter(loader)
-
-next(myiter)
+		img = loader.load([i,i,0])
+		cv2.imshow('', img)
+		cv2.waitKey(1)
+	'''
+	'''
+	#Open part of image
+	from PIL import Image
+	with h5py.File('/home/laboratorio/simslam2d/stitched_granite.hdf5', 'r') as f:
+		xmax = f['stitched'].shape[0]
+		ymax = f['stitched'].shape[1]
+		print(f['stitched'].shape)
+		img = Image.fromarray(f['stitched'][0:10000, 0:4731, :])
+		img.show()
+	'''
