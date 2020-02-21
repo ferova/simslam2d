@@ -19,7 +19,6 @@ class Preprocessor:
 		self.image_transformations = [np.array(t.split(), np.float32()) for t in database[1::2]]
 		self.count = 0
 
-		#self.image_transformations = self.image_transformations[:2]
 
 		self.x_centers = [a[2] for a in self.image_transformations]
 		self.y_centers = [a[5] for a in self.image_transformations]
@@ -56,12 +55,12 @@ class Preprocessor:
 
 				im_dst = cv2.warpPerspective(im_src, np.float32(transform), (im_dst.shape[1], im_dst.shape[0]), im_dst, borderMode=cv2.BORDER_TRANSPARENT)
 		
-		with h5py.File(name+".hdf5", "w") as f:
+		with h5py.File(self.name+".hdf5", "w") as f:
 			f.create_dataset("stitched", dtype = np.uint8, data = im_dst.view(np.uint8), chunks = True)
 
 
 
 
 if __name__ == '__main__':
-	preprocessor = Preprocessor('/home/laboratorio/simslam2d/databases/wood/', '', 'stitched_wood')
+	preprocessor = Preprocessor('/home/laboratorio/simslam2d/databases/asphalt_led/', '', 'stitched_asphalt_led')
 	preprocessor.preprocess()

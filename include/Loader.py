@@ -2,19 +2,23 @@ import numpy as np
 import cv2
 import h5py
 from typing import Tuple, List
-import math
+import logging
+
+logging.basicConfig()
+logging.getLogger().setLevel(logging.DEBUG)
 
 class Loader:
 	def __init__(
 		self,
 		image_path: str,
-		resolution,
-		area_to_load
+		resolution: Tuple,
+		area_to_load: Tuple
 		):
 		self.path = image_path
 		self.res  = resolution
 		self.area = area_to_load
 		self.current_corner = [0, 0]
+		self.initial_load = False
 
 	def load(self, pose):
 
@@ -23,12 +27,17 @@ class Loader:
 
 		with h5py.File(self.path, 'r') as f:
 
-			print('shape', f['stitched'].shape)
+			#logging.debug(f['stitched'].shape)
+
 			xmax = f['stitched'].shape[0]
 			ymax = f['stitched'].shape[1]
-		print('max' , xmax, ymax)
-		if self.isInArea(pose, self.res):
 
+		#logging.debug('maxx: {}, maxy: {}'.format(xmax, ymax))
+		
+		if self.isInArea(pose, self.res) and self.initial_load:
+			logging.debug(self.isInArea(pose, self.res))
+			self.isInArea(pose, self.res)
+			logging.debug('isInArea')
 			return None
 		else:
 
@@ -38,54 +47,54 @@ class Loader:
 
 					if int(x-aw//2) < 0:
 						if int(y - ah//2) < 0:
-							print('case 1')
+							logging.debug('case 1')
 							self.current_corner = [0, 0]
 							image = f['stitched'][0:aw, 0:ah]
 						else:
-							print('case 2')
+							logging.debug('case 2')
 							self.current_corner = [0, int(y-ah//2)]
 							image = f['stitched'][0:aw, int(y-ah//2):int(y+ah//2)]
 					else:
 						if int(y - ah//2) < 0:
-							print('case 3')
+							logging.debug('case 3')
 							self.current_corner = [int(x-aw//2), 0]
 							image = f['stitched'][int(x-aw//2):int(x+aw//2), 0:ah]
 						else:
-							print('case 4')
+							logging.debug('case 4')
 							self.current_corner = [x-aw//2, y-ah//2]
 							image = f['stitched'][int(x-aw//2):int(x+aw//2), int(y-ah//2):int(y+ah//2)]
 
 				elif int(x+aw//2) > xmax and int(y+ah//2) > ymax:
-					print('case 5')
+					logging.debug('case 5')
 					self.current_corner = [0, 0]
 					image = f['stitched'][xmax-aw:xmax, ymax-ah:ymax]
 
 				elif int(x+aw//2) > xmax:
 					if int(y - ah//2) < 0:
-						print('case 6')
+						logging.debug('case 6')
 						self.current_corner = [0, 0]
 						image = f['stitched'][xmax-aw:xmax, 0:ah]
 					else:
-						print('case 7')
+						logging.debug('case 7')
 						self.current_corner = [0, 0]
 						image = f['stitched'][xmax-aw:xmax, int(y-ah//2):int(y+ah//2)]
 
 				else:
 					if int(x - aw//2) < 0:
-						print('case 8')
+						logging.debug('case 8')
 						self.current_corner = [0, 0]
 						image = f['stitched'][0:aw, ymax-ah:ymax]
 					else:
-						print('case 9')
+						logging.debug('case 9')
 						self.current_corner = [0, 0]
 						image = f['stitched'][int(x-aw//2):int(x+aw//2), ymax-ah:ymax]
-
+		self.initial_load = True
 
 		return image
 
 	def isInArea(self, pose, resolution):
 
-		x, y, _ = pose
+		x, y, alpha = pose
 		h, w    = resolution
 
 		xmin = self.current_corner[0]
@@ -102,6 +111,9 @@ class Loader:
 		points.append([x - w/2 * np.cos(alpha) + h/2 * np.sin(alpha), y + w/2 * np.sin(alpha) + h/2 * np.cos(alpha)])
 
 		for pt in points:
+			logging.debug(pt)
+			logging.debug(xmin < pt[0] < xmax)
+			logging.debug(ymin < pt[1] < ymax)
 			if xmin < pt[0] < xmax:
 				if ymin < pt[1] < ymax:
 					pass
@@ -114,7 +126,7 @@ class Loader:
 
 if __name__ == '__main__':
 	#Open with Loader
-	'''
+	
 	loader = Loader('/home/laboratorio/simslam2d/stitched_tile.hdf5', (1000, 500), (1500, 1500))
 	for i in range(0, 100000, 1000):
 		print(i, i)
@@ -122,7 +134,7 @@ if __name__ == '__main__':
 		img = loader.load([i,i,0])
 		cv2.imshow('', img)
 		cv2.waitKey(1)
-	'''
+	
 	'''
 	#Open part of image
 	from PIL import Image
