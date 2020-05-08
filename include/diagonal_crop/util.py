@@ -3,7 +3,7 @@ from __future__ import division
 import collections
 import math
 
-from diagonal_crop import point
+from include.diagonal_crop import point
 
 
 def getCenter(im):

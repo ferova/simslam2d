@@ -1,5 +1,5 @@
-from diagonal_crop.point import * # pylint: disable=wildcard-import
-from diagonal_crop.util import * # pylint: disable=wildcard-import
+from include.diagonal_crop.point import * # pylint: disable=wildcard-import
+from include.diagonal_crop.util import * # pylint: disable=wildcard-import
 
 
 def crop(im, base, angle, height, width):
