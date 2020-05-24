@@ -1,6 +1,7 @@
 import cv2
 import h5py
 import sys, getopt
+import numpy as np
 
 def main(argv):
    inputfile = ''

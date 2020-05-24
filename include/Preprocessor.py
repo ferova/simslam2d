@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import h5py
 from tqdm import tqdm
+import os
 
 class Preprocessor:
 	def __init__(
@@ -10,7 +11,8 @@ class Preprocessor:
 		trajectory_file: str,
 		name: str = 'stitched_panorama'
 	):
-		self.database_file = database_file + 'database.txt'
+
+		self.database_file =os.path.join('', database_file + 'database.txt')
 		self.trajectory_file = trajectory_file
 
 		with open(self.database_file) as f:
@@ -62,5 +64,5 @@ class Preprocessor:
 
 
 if __name__ == '__main__':
-	preprocessor = Preprocessor('/home/laboratorio/simslam2d/databases/asphalt_led/', '', 'stitched_asphalt_led')
+	preprocessor = Preprocessor('C:\\Users\\jrodri56\\Documents\\GitHub\\simslam2d\\data\\microgps\\wood\\', '', 'stitched_wood')
 	preprocessor.preprocess()

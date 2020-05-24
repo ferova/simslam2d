@@ -6,13 +6,14 @@ from include.Loader import Loader
 from include.utils.map_utils import pre_path
 from include import diagonal_crop
 from include.utils.plot_utils import plot_rectangles
+from include.utils.traj_utils import create_traj
 import matplotlib.pyplot as plt
 
 class Cropper:
 	def __init__(
 		self,
 		image_path: str,
-		trajectory_path: str = 'test',
+		trajectory_path: str = 'lisajous',
 		crop_resolution: Tuple = (640,480),
 		loader_resolution: Tuple = (5000, 5000),
 		plot: bool = True,
@@ -24,25 +25,26 @@ class Cropper:
 		self.crop_resolution = crop_resolution
 		self.loader_resolution = loader_resolution
 
-		if self.trajectory_path != 'test':
-			self.trajectory = np.genfromtxt(trajectory_path, delimiter = ',')
-		else:
-			t = np.linspace(0, 2*np.pi+0.01, 100)
 
-			x = 2500*np.cos(3*t)+3000
-			y = 1000*np.sin(t)  +2000
-
-			self.trajectory = np.append(y[:, np.newaxis], x[:, np.newaxis], axis=1)*0.5
-
-
-		if self.trajectory.shape[1] < 3:
-			self.trajectory = pre_path(self.trajectory)
 
 		self.count = 0
 		self.loader = Loader(image_path = image_path,
 							 resolution = crop_resolution,
 							 area_to_load = loader_resolution)
 		self.image = None
+
+
+		self.trajectory = create_traj(trajectory_path, self.loader.ymax, self.loader.xmax)
+
+
+		plt.plot(self.trajectory[:, 0],self.trajectory[:, 1])
+		plt.axis('equal')
+		plt.show()
+
+
+		if self.trajectory.shape[1] < 3:
+			self.trajectory = pre_path(self.trajectory)
+
 
 		self.aug = augmenter
 		self.plot = plot
@@ -65,7 +67,6 @@ class Cropper:
 		h, w = self.crop_resolution
 
 
-
 		image = loader.load(pose)
 
 		xc = x - w/2 * np.cos(alpha) - h/2 * np.sin(alpha)
@@ -79,7 +80,7 @@ class Cropper:
 			crop = diagonal_crop.crop(Image.fromarray(self.image), (xc - loader.current_corner[0], yc - loader.current_corner[1]), alpha, h, w)
 
 		if aug is not None:
-			crop = aug(crop)
+			crop = aug(self, np.array(crop))
 
 		if self.plot:
 			canvas = plot_rectangles(self.image, [x-loader.current_corner[0],y-loader.current_corner[1], alpha], [], h, w, show = False)

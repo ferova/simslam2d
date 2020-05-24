@@ -6,7 +6,7 @@ In order to use it you can run
 
 `python simslam.py -i <inputfile> -t <trajectoryfile> -o <outputfile>`
 
-where inputfile is the input hdf5, trajectoryfile is the input csv and outputfile is the output directory to store the images and the poses to.
+where inputfile is the input hdf5, trajectoryfile is the input csv and outputfile is the output directory to store the images and the poses to. For a test trajectory type 'test' in the trajectoryfile field.
 
 In order to easily convert the panorama from image file to hdf5 run 
 

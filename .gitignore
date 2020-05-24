@@ -126,6 +126,8 @@ dmypy.json
 # Databases
 
 databases/
+data/
+algorithms/
 
 # Images
 *.hdf5

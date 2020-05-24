@@ -33,7 +33,6 @@ def draw_rectangle(image, centre, theta, width, height, linewidth = 3, color = (
 def plot_rectangles(map_image2, rect1, rect2, h, w, show = True):
 
 
-	cv2.namedWindow('window1' , cv2.WINDOW_NORMAL)
 
 
 	map_image = map_image2.copy()
@@ -51,6 +50,7 @@ def plot_rectangles(map_image2, rect1, rect2, h, w, show = True):
 
 	if show:
 
+		cv2.namedWindow('window1' , cv2.WINDOW_NORMAL)
 		cv2.imshow('window1', map_image)
 		cv2.waitKey(1)
 	else:

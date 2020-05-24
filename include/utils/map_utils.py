@@ -15,14 +15,13 @@ def pre_path(path):
 		The path is considered to be cyclic so the last angle is found between the last and the first point.
 	"""
 
-	path = np.asarray(path)
 	path2 = np.roll(path, -1, axis=0)
 
 
 	dx = path2[:,0]-path[:,0]
 	dy = path2[:,1]-path[:,1]
 
-	theta = np.arctan2(dy, dx)
+	theta = np.arctan2(dx, dy)+np.pi
 	theta[-1] = theta[-2]
 	path  = np.append(path, theta[:, np.newaxis], axis = 1)
 

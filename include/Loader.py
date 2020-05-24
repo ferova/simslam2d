@@ -30,16 +30,19 @@ class Loader:
 	def load(self, pose):
 
 		x, y, _ = pose
-		aw, ah = self.area
+		ah, aw = self.area
 
 		xmax = self.xmax
 		ymax = self.ymax
+
+		if xmax < aw or ymax < ah:
+			raise ValueError('One of the dimensions in the loading area is larger than those of the terrain.')
 		
 		
 		if self.isInArea(pose, self.res) and self.initial_load:
-			logging.debug(self.isInArea(pose, self.res))
-			self.isInArea(pose, self.res)
-			logging.debug('isInArea')
+			#logging.debug(self.isInArea(pose, self.res))
+			#self.isInArea(pose, self.res)
+			#logging.debug('isInArea')
 			return None
 		else:
 			with h5py.File(self.path, 'r') as f:
@@ -83,7 +86,7 @@ class Loader:
 				else:
 					if int(x - aw//2) < 0:
 						logging.debug('case 8')
-						self.current_corner = [ymax-ah, 0]
+						self.current_corner = [0, ymax-ah]
 						image = f['stitched'][ymax-ah:ymax, 0:aw]
 					else:
 						logging.debug('case 9')
@@ -112,9 +115,9 @@ class Loader:
 		points.append([x - w/2 * np.cos(alpha) + h/2 * np.sin(alpha), y + w/2 * np.sin(alpha) + h/2 * np.cos(alpha)])
 
 		for pt in points:
-			logging.debug(pt)
-			logging.debug(xmin < pt[0] < xmax)
-			logging.debug(ymin < pt[1] < ymax)
+			#logging.debug(pt)
+			#logging.debug(xmin < pt[0] < xmax)
+			#logging.debug(ymin < pt[1] < ymax)
 			if xmin < pt[0] < xmax:
 				if ymin < pt[1] < ymax:
 					pass
@@ -122,7 +125,6 @@ class Loader:
 					return False
 			else:
 				return False
-
 		return True
 
 	
