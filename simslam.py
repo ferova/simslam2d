@@ -30,29 +30,22 @@ def main(argv):
 
    x, y, theta = cropper.trajectory[:, 0], cropper.trajectory[:, 1], cropper.trajectory[:, 2]
 
-   x2, y2, theta2 = np.roll(cropper.trajectory[:, 0], -1, axis=0), np.roll(cropper.trajectory[:, 1], -1, axis=0), np.roll(cropper.trajectory[:, 2], -1, axis=0)
-
-   dx = x2-x
-
-   dy = y2-y
-
-   dt = theta2-theta
-
    #trajectory = cropper.trajectory
 
 #   trajectory = np.roll(trajectory, -1, axis=0) - trajectory
-   folder = 'C:\\Users\\jrodri56\\Documents\\GitHub\\simslam2d\\data\\test1\\concrete_ours_vid\\'+trajfile+'\\'
+   folder = 'C:\\Users\\jrodri56\\Documents\\GitHub\\simslam2d\\data\\test1\\asphalt_led\\'+trajfile+'\\'
    
    with open(os.path.join(folder, trajfile+'.txt'),'w+') as f:
-      for x, y, t in zip(dx,dy,dt):
-         c, s = np.cos(t), np.sin(t)
+      for xi, yi, ti in zip(x,y,theta):
+         c, s = np.cos(ti), np.sin(ti)
          R = np.matrix('{} {}; {} {}'.format(c, -s, s, c))
 
-         f.write('{:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f}\n'.format(c, -s, 0, x, s, c, 0, y, 0, 0, 1, 0))
+         f.write('{:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f}\n'.format(c, -s, 0, xi, s, c, 0, yi, 0, 0, 1, 0))
 
    i=0
-   for img in tqdm(cropper):
 
+   for img in tqdm(cropper):
+      break
       img_name = "{:06d}.png".format(i)
 
       img_name = os.path.join(folder, img_name)
