@@ -14,7 +14,7 @@ class Cropper:
 		self,
 		image_path: str,
 		trajectory_path: str = 'lisajous',
-		crop_resolution: Tuple = (640,480),
+		crop_resolution: Tuple = (480,640),
 		loader_resolution: Tuple = (5000, 5000),
 		plot: bool = True,
 		augmenter = None
@@ -72,6 +72,7 @@ class Cropper:
 		xc = x - w/2 * np.cos(alpha) - h/2 * np.sin(alpha)
 		yc = y + w/2 * np.sin(alpha) - h/2 * np.cos(alpha)
 
+		# Diagonal crop the loaded image.
 
 		if image is not None:
 			crop = diagonal_crop.crop(Image.fromarray(image), (xc - loader.current_corner[0], yc - loader.current_corner[1]), alpha, h, w)
@@ -79,8 +80,12 @@ class Cropper:
 		else:
 			crop = diagonal_crop.crop(Image.fromarray(self.image), (xc - loader.current_corner[0], yc - loader.current_corner[1]), alpha, h, w)
 
+		# Perform augmentation if any.
+
 		if aug is not None:
 			crop = aug(self, np.array(crop))
+
+		# Plot the loaded area together with the part cropped.
 
 		if self.plot:
 			canvas = plot_rectangles(self.image, [x-loader.current_corner[0],y-loader.current_corner[1], alpha], [], h, w, show = False)
@@ -91,5 +96,23 @@ class Cropper:
 		
 		self.count += 1
 
-		return np.array(crop)
+		# Ensure the crop has the required resolution by cropping or padding, this is due to diagonal_crop rounding.
+
+		crop = np.array(crop)
+
+		ch, cw = crop.shape[0], crop.shape[1]
+
+		c = np.zeros((h, w, crop.shape[2]), dtype=crop.dtype )
+
+		if ch > h:
+			crop = crop[:h, :, :]
+			ch = h
+
+		if cw > w:
+			crop = crop[:, w, :]
+			cw = w
+
+		c[:ch,:cw,:] = crop
+
+		return c
 

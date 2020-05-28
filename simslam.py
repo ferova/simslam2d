@@ -45,8 +45,7 @@ def main(argv):
    i=0
 
    for img in tqdm(cropper):
-      break
-      img_name = "{:06d}.png".format(i)
+      img_name = "{:06d}.jpg".format(i)
 
       img_name = os.path.join(folder, img_name)
      # print(img_name)
