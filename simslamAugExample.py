@@ -32,8 +32,8 @@ def main(argv):
 
 
       seq = iaa.Sequential([
-               #iaa.MotionBlur(k=[21], angle=np.rad2deg(alpha))
-               #iaa.CoarseDropout(0.02, size_percent = 0.5)
+               iaa.MotionBlur(k=[3,21], angle=np.rad2deg(alpha-np.pi/2))
+               #iaa.GammaContrast(1.25)
                #iaa.GaussianBlur(sigma=(1, 3.0))
                #iaa.Cutout(fill_mode="constant", cval=0, size = 0.5)
                ])

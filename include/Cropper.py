@@ -34,12 +34,13 @@ class Cropper:
 		self.image = None
 
 
-		self.trajectory = create_traj(trajectory_path, self.loader.ymax, self.loader.xmax)
+		self.trajectory = create_traj(trajectory_path, self.loader.ymax, self.loader.xmax, 3000)
 
+		if False:
 
-		plt.plot(self.trajectory[:, 0],self.trajectory[:, 1])
-		plt.axis('equal')
-		plt.show()
+			plt.plot(self.trajectory[:, 0],self.trajectory[:, 1])
+			plt.axis('equal')
+			plt.show()
 
 
 		if self.trajectory.shape[1] < 3:
@@ -109,7 +110,7 @@ class Cropper:
 			ch = h
 
 		if cw > w:
-			crop = crop[:, w, :]
+			crop = crop[:, :w, :]
 			cw = w
 
 		c[:ch,:cw,:] = crop
