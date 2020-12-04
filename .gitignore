@@ -126,7 +126,7 @@ dmypy.json
 # Databases
 
 databases/
-data/
+data/*
 algorithms/
 
 # Images
@@ -137,3 +137,5 @@ algorithms/
 *.png
 
 .idea/
+
+include/

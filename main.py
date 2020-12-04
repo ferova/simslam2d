@@ -1,13 +1,91 @@
 import sys, getopt
 import cv2
 from tqdm import tqdm
-from include.Cropper import Cropper
 import numpy as np
 import os
-from include.utils.traj_utils import get_overlap_ratio
+from simslam2d.Cropper import Cropper
+from simslam2d.utils.traj_utils import get_overlap_ratio
 import json 
 import matplotlib.pyplot as plt
+import yaml
 
+conf2cropper = {
+      'inputfolder': 'image_path',
+      'trajectory.name': 'trajectory_path',
+      'trajectory.res': 'trajectory_res',
+      'cropper.res': 'crop_resolution',
+      'loader.res': 'loader_resolution',
+      'plot.traj': 'plot_traj',
+      'plot.crop': 'plot' 
+}
+
+def main(argv):
+   inputfile = ''
+   outputfile = ''
+   try:
+      opts, args = getopt.getopt(argv,"h:c:",["cfile="])
+   except getopt.GetoptError:
+      print('python simslam.py -c <conffile>')
+      sys.exit(2)
+
+   if not opts:
+      print('python simslam.py -c <conffile>')
+      sys.exit(2)
+
+   for opt, arg in opts:
+      if opt == '-h':
+         print('python simslam.py -c <conffile>')
+         sys.exit()
+      elif opt in ("-c", "--cfile"):
+         conffile = arg
+
+   with open(os.path.abspath(os.path.join(os.getcwd(), conffile))) as file:
+      config = yaml.full_load(file)
+   
+   cropperconf = {}
+   
+   for k,v in config.items():
+      if conf2cropper.get(k):
+         cropperconf[conf2cropper[k]] = v
+      else:
+         if k == 'load_area.x':
+            if config.get('load_area.y'):
+               cropperconf['loader_resolution'] = (v, config.get('load_area.y')) 
+            else:
+               assert IOError('Failed to read load_area.y')
+         elif k == 'load_area.y':
+            if config.get('load_area.x'):
+               cropperconf['loader_resolution'] = (config.get('load_area.x'), v) 
+            else:
+               assert IOError('Failed to read load_area.y')
+
+         if k == 'crop_area.x':
+            if config.get('crop_area.y'):
+               cropperconf['crop_resolution'] = (v, config.get('crop_area.y')) 
+            else:
+               assert IOError('Failed to read crop_area.y')
+         elif k == 'crop_area.y':
+            if config.get('crop_area.x'):
+               cropperconf['crop_resolution'] = (config.get('crop_area.x'), v) 
+            else:
+               assert IOError('Failed to read crop_area.y')
+
+   cropper = Cropper(**cropperconf)
+
+   #https://stackoverflow.com/questions/3061/calling-a-function-of-a-module-by-using-its-name-a-string
+
+   for img in tqdm(cropper):
+            #img_name = "{:06d}.jpg".format(i)
+
+            #img_name = os.path.join(folder, img_name)
+            #print(img_name)
+            #cv2.imwrite(img_name, img)
+            cv2.imshow('', img)
+            cv2.waitKey(1)
+            #i+=1
+
+
+"""
 def main(argv):
    inputfile = ''
    outputfile = ''
@@ -84,7 +162,7 @@ def main(argv):
             cv2.imshow('', img)
             cv2.waitKey(1)
             i+=1
-
+"""
 if __name__ == "__main__":
    main(sys.argv[1:])
    # python simslam.py -i data/concrete_ours_picture.hdf5 -t trajectory.csv

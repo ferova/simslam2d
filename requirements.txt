@@ -7,3 +7,4 @@ olefile==0.44
 Pillow
 h5py
 tqdm
+pyyaml

@@ -1,12 +1,13 @@
 import numpy as np
 import cv2
+from simslam2d import diagonal_crop
 from PIL import Image
 from typing import Tuple, List
-from include.Loader import Loader
-from include.utils.map_utils import pre_path
-from include import diagonal_crop
-from include.utils.plot_utils import plot_rectangles
-from include.utils.traj_utils import create_traj
+from simslam2d.Loader import Loader
+from simslam2d.utils.plot_utils import plot_rectangles
+from simslam2d.utils.traj_utils import pre_path
+from simslam2d.utils.traj_utils import create_traj
+
 import matplotlib.pyplot as plt
 
 class Cropper:
@@ -14,8 +15,10 @@ class Cropper:
 		self,
 		image_path: str,
 		trajectory_path: str = 'lisajous',
+		trajectory_res: int = 3000,
 		crop_resolution: Tuple = (480,640),
 		loader_resolution: Tuple = (5000, 5000),
+		plot_traj: bool = False,
 		plot: bool = True,
 		augmenter = None
 		):
@@ -33,14 +36,16 @@ class Cropper:
 							 area_to_load = loader_resolution)
 		self.image = None
 
+		if trajectory_path in ['lisajous', 'squircle', 'sin2', 'layp']:
+			self.trajectory = create_traj(trajectory_path, self.loader.ymax, self.loader.xmax, trajectory_res)
+		else:
+			self.trajectory = genfromtxt(trajectory, delimiter=',')
 
-		self.trajectory = create_traj(trajectory_path, self.loader.ymax, self.loader.xmax, 3000)
-
-		if False:
-
+		if plot_traj:
 			plt.plot(self.trajectory[:, 0],self.trajectory[:, 1])
 			plt.axis('equal')
-			plt.show()
+			plt.show(block = False)
+			plt.pause(5)
 
 
 		if self.trajectory.shape[1] < 3:

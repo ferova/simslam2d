@@ -19,14 +19,15 @@ class Loader:
 		self.area = area_to_load
 		self.current_corner = [0, 0]
 		self.initial_load = False
+		try:
+			with h5py.File(self.path, 'r') as f:
 
-		with h5py.File(self.path, 'r') as f:
+				#logging.debug(f['stitched'].shape)
 
-			#logging.debug(f['stitched'].shape)
-
-			self.xmax = f['stitched'].shape[1]
-			self.ymax = f['stitched'].shape[0]
-
+				self.xmax = f['stitched'].shape[1]
+				self.ymax = f['stitched'].shape[0]
+		except Exception as e:
+			raise IOError from e
 	def load(self, pose):
 
 		x, y, _ = pose

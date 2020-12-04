@@ -3,7 +3,7 @@ from __future__ import division
 import collections
 import math
 
-from include.diagonal_crop import point
+from simslam2d.diagonal_crop import point
 
 
 def getCenter(im):

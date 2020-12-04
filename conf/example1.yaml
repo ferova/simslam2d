@@ -1,0 +1,35 @@
+# Simslam2d example conf file.
+
+# Input image folder
+
+inputfolder: 'C:\Users\jrodri56\Documents\GitHub\simslam2d\data\concrete_ours_vid.hdf5'
+
+# Output image folder
+
+outputfolder: '/outputfolder/'
+
+# Preprocess 
+
+preprocess: True
+
+# Loading area
+
+load_area.x: 3000
+load_area.y: 3000
+
+# Cropping area
+
+crop_area.x: 500
+crop_area.y: 500
+
+# Trajectory
+
+trajectory.name: 'lisajous'
+trajectory.res: 1000
+
+# Plotting
+
+plot.traj: True
+plot.crop: True
+
+#augmenter: '[type: MotionBlur, k='sdasd']'
