@@ -8,23 +8,20 @@ class Preprocessor:
 	def __init__(
 		self,
 		database_file: str,
-		trajectory_file: str,
 		name: str = 'stitched_panorama'
 	):
 
 		self.database_file =os.path.join('', database_file + 'database.txt')
-		self.trajectory_file = trajectory_file
 
 		with open(self.database_file) as f:
 			database = f.read().splitlines()
+
 		self.image_paths = [database_file + s for s in database[::2]]
 		self.image_transformations = [np.array(t.split(), np.float32()) for t in database[1::2]]
 		self.count = 0
 
-
 		self.x_centers = [a[2] for a in self.image_transformations]
 		self.y_centers = [a[5] for a in self.image_transformations]
-
 
 		self.max_x = max(self.x_centers)
 		self.max_y = max(self.y_centers)
@@ -57,12 +54,37 @@ class Preprocessor:
 
 				im_dst = cv2.warpPerspective(im_src, np.float32(transform), (im_dst.shape[1], im_dst.shape[0]), im_dst, borderMode=cv2.BORDER_TRANSPARENT)
 		
-		with h5py.File(self.name+".hdf5", "w") as f:
+		with h5py.File(self.name, "w") as f:
 			f.create_dataset("stitched", dtype = np.uint8, data = im_dst.view(np.uint8), chunks = True)
 
 
 
-
 if __name__ == '__main__':
-	preprocessor = Preprocessor('C:\\Users\\jrodri56\\Documents\\GitHub\\simslam2d\\data\\microgps\\wood\\', '', 'stitched_wood')
+	import sys, getopt
+
+	inputfile = ''
+	outputfile = 'stitched_panorama.hdf5'
+
+	argv = sys.argv[1:]
+
+	try:
+		opts, args = getopt.getopt(argv,"h:i:o:",["ifile=", "ofile="])
+	except getopt.GetoptError:
+		print('python Preprocessor.py -i <inputfolder> -o <outputfile>')
+		sys.exit(2)
+
+	if not opts:
+		print('python Preprocessor.py -i <inputfolder> -o <outputfile>')
+		sys.exit(2)
+
+	for opt, arg in opts:
+		if opt == '-h':
+			print('python Preprocessor.py -i <inputfolder> -o <outputfile>')
+			sys.exit()
+		elif opt in ("-i", "--ifile"):
+			inputfile = arg
+		elif opt in ("-o", "--ofile"):
+			outputfile = arg
+
+	preprocessor = Preprocessor(inputfile, outputfile)
 	preprocessor.preprocess()

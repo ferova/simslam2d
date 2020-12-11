@@ -39,7 +39,7 @@ class Cropper:
 		if trajectory_path in ['lisajous', 'squircle', 'sin2', 'layp']:
 			self.trajectory = create_traj(trajectory_path, self.loader.ymax, self.loader.xmax, trajectory_res)
 		else:
-			self.trajectory = genfromtxt(trajectory, delimiter=',')
+			self.trajectory = np.genfromtxt(self.trajectory_path, delimiter=',')
 
 		if plot_traj:
 			plt.plot(self.trajectory[:, 0],self.trajectory[:, 1])

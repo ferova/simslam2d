@@ -9,6 +9,7 @@ import json
 import matplotlib.pyplot as plt
 import yaml
 
+
 conf2cropper = {
       'inputfolder': 'image_path',
       'trajectory.name': 'trajectory_path',
@@ -16,7 +17,7 @@ conf2cropper = {
       'cropper.res': 'crop_resolution',
       'loader.res': 'loader_resolution',
       'plot.traj': 'plot_traj',
-      'plot.crop': 'plot' 
+      'plot.croparea': 'plot' 
 }
 
 def main(argv):
@@ -25,16 +26,16 @@ def main(argv):
    try:
       opts, args = getopt.getopt(argv,"h:c:",["cfile="])
    except getopt.GetoptError:
-      print('python simslam.py -c <conffile>')
+      print('python main.py -c <conffile>')
       sys.exit(2)
 
    if not opts:
-      print('python simslam.py -c <conffile>')
+      print('python main.py -c <conffile>')
       sys.exit(2)
 
    for opt, arg in opts:
       if opt == '-h':
-         print('python simslam.py -c <conffile>')
+         print('python main.py -c <conffile>')
          sys.exit()
       elif opt in ("-c", "--cfile"):
          conffile = arg
@@ -70,19 +71,53 @@ def main(argv):
             else:
                assert IOError('Failed to read crop_area.y')
 
+
+   if config['augmentation']:
+      from imgaug import augmenters as iaa
+      augmenter_list = []
+
+      for aug in config['augmenters']:
+         aug_placeholder = getattr(iaa, aug['augmenter'])
+         del aug['augmenter']
+         augmenter_list.append(aug_placeholder(**aug))
+
+      seq = iaa.Sequential(augmenter_list)
+
+   import pdb
+   #pdb.set_trace()
+
    cropper = Cropper(**cropperconf)
 
    #https://stackoverflow.com/questions/3061/calling-a-function-of-a-module-by-using-its-name-a-string
 
-   for img in tqdm(cropper):
-            #img_name = "{:06d}.jpg".format(i)
+   i = 0
+   if config['augmentation']:
+      for img in tqdm(cropper):
+         img = seq.augment_image(img)
 
-            #img_name = os.path.join(folder, img_name)
-            #print(img_name)
-            #cv2.imwrite(img_name, img)
-            cv2.imshow('', img)
+         if config['saveimages']:
+            img_name = "{:010d}.jpg".format(i)
+            img_name = os.path.join(config.get('outputfolder', 'data/outputimages/'), img_name)
+            cv2.imwrite(img_name, img)
+
+         if config.get('plot.crop', False):
+            cv2.imshow('Crop', img)
             cv2.waitKey(1)
-            #i+=1
+         i+=1
+   else:
+      for img in tqdm(cropper):
+         
+         if config.get('saveimages', False):
+            img_name = "{:010d}.jpg".format(i)
+            img_name = os.path.join(config.get('outputfolder', 'data/outputimages/'), img_name)
+            cv2.imwrite(img_name, img)
+
+         if config.get('plot.crop', False):
+            cv2.imshow('Crop', img)
+            cv2.waitKey(1)
+
+         i+=1
+
 
 
 """
@@ -165,4 +200,3 @@ def main(argv):
 """
 if __name__ == "__main__":
    main(sys.argv[1:])
-   # python simslam.py -i data/concrete_ours_picture.hdf5 -t trajectory.csv

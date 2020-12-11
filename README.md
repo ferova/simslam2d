@@ -1,4 +1,4 @@
-Simslam2D
+### Simslam2D
 
 Software to simulate what a robot sees when walking and looking down the floor on a given trajectory. The inputs are a trajectory of poses in csv format (can be only the xy poses) and an image stored in hdf5 format.
 
@@ -14,7 +14,20 @@ In order to easily convert the panorama from image file to hdf5 run
 
 In order to manipulate the image in some ways, please read how simslam.py and Cropper.py are implemented.
 
-Documentation is pending.
+### MicroGPS Preprocessing Tutorial
+
+1. Install all the necessary depdencies with `pip`:
+`pip install -r requirements.txt`
+2. Download and extract one of the databases of Micro GPS at https://microgps.cs.princeton.edu/ .
+3. Run the preprocessor script by calling:
+`python simslam2d/Preprocessor.py -i <inputfolder> -o <outputfile>`
+
+Here, the inputfolder has to be the extracted database folder, the outputfile has to be the path to the desired panorama, it must have the .hdf5 extension. For example, if one downloads the granite database and extracts it to `data/granite` calling the following:
+`python simslam2d/Preprocessor.py -i data/granite/ -o data/granite.hdf5` would produce a panorama called granite.hdf5 in the data folder.
+
+### Running Simslam2d 
+
+
 
 This software uses the following libraries:
 

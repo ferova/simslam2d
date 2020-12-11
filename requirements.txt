@@ -6,5 +6,5 @@ scipy
 olefile==0.44
 Pillow
 h5py
-tqdm
+tqdmconda
 pyyaml
