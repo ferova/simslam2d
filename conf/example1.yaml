@@ -2,7 +2,7 @@
 
 # Input image folder
 
-inputfolder: 'data/granite.hdf5'
+inputfile: 'data/granite.hdf5'
 
 # Save Images
 
@@ -10,11 +10,7 @@ saveimages: False
 
 # Output image folder
 
-outputfolder: '/outputfolder/'
-
-# Preprocess 
-
-preprocess: True
+outputfolder: 'data/outputfolder/'
 
 # Loading area
 

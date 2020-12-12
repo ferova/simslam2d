@@ -46,7 +46,6 @@ class Preprocessor:
 
 			transform[0,2]+=abs(self.min_x)
 			#transform[1,2]+=self.min_y
-			
 
 			if i == 0:
 				im_dst = cv2.warpPerspective(im_src, np.float32(transform), (int(w//2)+1000, int(h)+1000), borderMode=cv2.BORDER_TRANSPARENT)

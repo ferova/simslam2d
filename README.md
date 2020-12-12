@@ -28,6 +28,22 @@ Here, the inputfolder has to be the extracted database folder, the outputfile ha
 ### Running Simslam2d 
 
 
+| Parameter       | Type       | Description                                                  |
+|-----------------|------------|--------------------------------------------------------------|
+| inputfolder     | string     | The path to the terrain in hdf5 format.                      |
+| saveimages      | bool       | Whether to save the resulting crops or not.                  |
+| outputfolder    | string     | Folder where the resulting images are saved to.              |
+| load_area.x     | int        | Width of the loaded area.                                    |
+| load_area.y     | int        | Height of the loaded area.                                   |
+| crop_area.x     | int        | Width of the resulting cropped images.                       |
+| crop_area.y     | int        | Height of the resulting cropped images.                      |
+| trajectory.name | string     | Name of the trajectory or path to csv. *                     |
+| trajectory.res  | int        | Number of poses in the trajectory.                           |
+| plot.traj       | bool       | Plot a preview of the trajectory.                            |
+| plot.croparea   | bool       | Plot the loaded area with the relative position of the crop. |
+| plot.crop       | bool       | Plot the resulting crop.                                     |
+| augmentation    | bool       | Whether or not to apply                                      |
+| augmenters      | list(dict) | List of augmenter definitions. **                            |
 
 This software uses the following libraries:
 
