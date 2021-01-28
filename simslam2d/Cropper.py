@@ -91,7 +91,7 @@ class Cropper:
 		if aug is not None:
 			crop = aug(self, np.array(crop))
 
-		# Plot the loaded area together with the part cropped.
+		# Plot the loaded area together with the cropped rectangle.
 
 		if self.plot:
 			canvas = plot_rectangles(self.image, [x-loader.current_corner[0],y-loader.current_corner[1], alpha], [], h, w, show = False)
@@ -102,7 +102,7 @@ class Cropper:
 		
 		self.count += 1
 
-		# Ensure the crop has the required resolution by cropping or padding, this is due to diagonal_crop rounding.
+		# Assure the crop has the required resolution by cropping or padding, this is due to diagonal_crop rounding.
 
 		crop = np.array(crop)
 

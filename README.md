@@ -110,12 +110,13 @@ In order to run the simulation with the previously generated images:
 
 
 
-\* The trajectory name can either be one of ['lisajous', 'squircle', 'sin2', 'layp'] or the path to a csv file with containing the poses in *x, y* pairs or *x,y,theta* triplets. Examples of these files can be found on the data folder.
+\* The trajectory name can either be one of ['lisajous', 'squircle', 'sin2', 'layp'] or the path to a csv file with containing the poses in *x, y* pairs or *x,y,theta* triplets. Examples of these files can be found on the data folder. The poses in these files need to be given in pixel coordinates relative to the upper-left corner of the panorama.
 
 ** The list of augmenters consists of a list of dictionaries, in which each dictionary corresponds to an augmenter in the imgaug library.
 
 
 ## Running a simulation with augmentation
+
 
 
 

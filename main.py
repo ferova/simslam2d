@@ -90,14 +90,13 @@ def main(argv):
    i = 0
    
    # Images are saved and displayed.
-
    if config['augmentation']:
       for img in tqdm(cropper):
          img = seq.augment_image(img)
 
          if config['saveimages']:
             img_name = "{:010d}.jpg".format(i)
-            img_name = os.path.join(config.get('outputfolder', 'data/outputimages/'), img_name)
+            img_name = os.path.join(config.get('outputfolder'), img_name)
             cv2.imwrite(img_name, img)
 
          if config.get('plot.crop', False):
@@ -109,7 +108,7 @@ def main(argv):
          
          if config.get('saveimages', False):
             img_name = "{:010d}.jpg".format(i)
-            img_name = os.path.join(config.get('outputfolder', 'data/outputimages/'), img_name)
+            img_name = os.path.join(config.get('outputfolder'), img_name)
             cv2.imwrite(img_name, img)
 
          if config.get('plot.crop', False):
