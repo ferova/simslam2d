@@ -42,6 +42,8 @@ def main(argv):
    with open(os.path.abspath(os.path.join(os.getcwd(), conffile))) as file:
       config = yaml.full_load(file)
    
+   # Configuration parameters are parsed
+
    cropperconf = {}
    
    for k,v in config.items():
@@ -61,14 +63,16 @@ def main(argv):
 
          if k == 'crop_area.x':
             if config.get('crop_area.y'):
-               cropperconf['crop_resolution'] = (v, config.get('crop_area.y')) 
+               cropperconf['crop_resolution'] = (config.get('crop_area.y'), v) 
             else:
                assert IOError('Failed to read crop_area.y')
          elif k == 'crop_area.y':
             if config.get('crop_area.x'):
-               cropperconf['crop_resolution'] = (config.get('crop_area.x'), v) 
+               cropperconf['crop_resolution'] = (v, config.get('crop_area.x')) 
             else:
                assert IOError('Failed to read crop_area.y')
+
+   # Augmentation parameters are parsed.
 
    if config['augmentation']:
       from imgaug import augmenters as iaa
@@ -83,9 +87,10 @@ def main(argv):
 
    cropper = Cropper(**cropperconf)
 
-   #https://stackoverflow.com/questions/3061/calling-a-function-of-a-module-by-using-its-name-a-string
-
    i = 0
+   
+   # Images are saved and displayed.
+
    if config['augmentation']:
       for img in tqdm(cropper):
          img = seq.augment_image(img)
@@ -112,6 +117,24 @@ def main(argv):
             cv2.waitKey(1)
 
          i+=1
+
+
+   x, y, theta = cropper.trajectory[:, 0], cropper.trajectory[:, 1], cropper.trajectory[:, 2]
+
+   if config.get('trajname'):
+      if config['trajname'][-4:] == '.txt':
+         trajpath = config['trajname']
+      else:
+         trajpath = config['trajname']+'.txt'
+   else:
+      trajpath = 'estimated_trajectory.txt'
+
+   with open(os.path.join(trajpath),'w+') as f:
+      for xi, yi, ti in zip(x,y,theta):
+         c, s = np.cos(ti), np.sin(ti)
+         R = np.matrix('{} {}; {} {}'.format(c, -s, s, c))
+
+         f.write('{:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f} {:06f}\n'.format(c, -s, 0, xi, s, c, 0, yi, 0, 0, 1, 0))
 
 if __name__ == "__main__":
    main(sys.argv[1:])

@@ -3,7 +3,6 @@ matplotlib
 opencv-python
 opencv-contrib-python
 scipy
-olefile==0.44
 Pillow
 h5py
 tqdmconda

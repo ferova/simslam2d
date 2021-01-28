@@ -4,8 +4,6 @@ import h5py
 from typing import Tuple, List
 import logging
 
-logging.basicConfig()
-#logging.getLogger().setLevel(logging.DEBUG)
 
 class Loader:
 	def __init__(
@@ -21,9 +19,6 @@ class Loader:
 		self.initial_load = False
 		try:
 			with h5py.File(self.path, 'r') as f:
-
-				#logging.debug(f['stitched'].shape)
-
 				self.xmax = f['stitched'].shape[1]
 				self.ymax = f['stitched'].shape[0]
 		except Exception as e:
@@ -41,9 +36,6 @@ class Loader:
 		
 		
 		if self.isInArea(pose, self.res) and self.initial_load:
-			#logging.debug(self.isInArea(pose, self.res))
-			#self.isInArea(pose, self.res)
-			#logging.debug('isInArea')
 			return None
 		else:
 			with h5py.File(self.path, 'r') as f:
@@ -116,9 +108,6 @@ class Loader:
 		points.append([x - w/2 * np.cos(alpha) + h/2 * np.sin(alpha), y + w/2 * np.sin(alpha) + h/2 * np.cos(alpha)])
 
 		for pt in points:
-			#logging.debug(pt)
-			#logging.debug(xmin < pt[0] < xmax)
-			#logging.debug(ymin < pt[1] < ymax)
 			if xmin < pt[0] < xmax:
 				if ymin < pt[1] < ymax:
 					pass
