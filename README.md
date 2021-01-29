@@ -1,5 +1,7 @@
 # Simslam 2D
 
+![Simslam2D Demp](demo/demo.gif)
+
 Simslam2D is a research-oriented, open-source software to simulate what a robot sees when traversing a planar environment while looking down the floor on a given trajectory. It is completely written in Python with the use of OpenCV, Numpy and HDF5.
 
 This opens up the possibility of rapidly prototyping new planar visual-SLAM algorithms via simulation.
