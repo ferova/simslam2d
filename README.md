@@ -67,7 +67,7 @@ Here, the inputfile is a panoramic image of the terrain. For example, calling
 
 #### Example
 
-1. Download the test panorama [here](https://eafit-my.sharepoint.com/:i:/g/personal/jrodri56_eafit_edu_co/EUrBemcStzdHqwaTwIKA58QBS-6RV8QpauZk4cV3nQ6aJA?e=JeO9Sr).
+1. Download the example panorama [here](https://public.dm.files.1drv.com/y4mzpmiD9_bBWSCUKqTvMtTVIEMvzy4YziHzN7aT5NRu7-An6z5OJYNTHQKBYeHbpQ4av1JxcAKLIyCDcOFS2gSSopAnPl7WZ3RQoDFW9dRIBaFiRaqB8Y3NegDXPwmXYttrkKH8dcreOj0xs5MZFWRpvTetIAO9cIsHub4RwXIgeS0EHHJmTQQxPjORf8YIGa-ofQDQrrsOeelgDT1UQJWLWnN38ij88K5cFpnQbUuh7A?access_token=EwAAA61DBAAUmcDj0azQ5tf1lkBfAvHLBzXl5ugAAe79Gz5ei%2bQ5HHJ%2bCxrhF/X949gpNWnRX9jt3HFra8QI1u82m9%2bRjLow%2bIVyPmAIR3/Ke5iNH%2bHcwWuZjkNanffYHqUWekrXesoKCdvrXcx2RwBQQCYVbjDusq9y0RRS0oz5iShjkAd7joTVQ%2bBKtYoMMkpr2F629iRGZMn3FFjNR%2bGsHd21qA%2bTg8cM7II2POlsfV/yhZCh1/fyttcH%2bYWeU8x17E4CQzJXAN7LYCswKg5N/WwAT%2bmlIVx0I3rwxIkPDYkINX9zrUbx8HeF0zXfjjluvejiUBnapeJafMAM9JZmieThfc1L8IjcHEIA3favwLeWkj5ondHEqZ87UxoDZgAACMoXioJdXlsI0AHAPSPyl9mu/qPWQuhZ9fWFk6VbsW3oAbeMXRSfmogp65yjB/5S453Lznc9PjE/%2bVIa5ecz7OjXJkn9OU1ilkVfhntKNQ8YWI/ZAbmijbHshRTLDY628Tgj12a3eDLHql4C/lTRBzi%2bOdkNM0sa04N56HUTEo/CnWiozAgc3cP69ff35n/GOO%2b6%2bo/6ZJZhbJPzCkzgHpozplDum2eBM5rOE0Hhq2tuEGJBEjTZU8zUfwJnm6JQiNe1wSGftgaKf3oBja37OgdUXCh4NCOiN1S7heN5l8geFC6Yl776SpKHkPLt1C8fwutoCWNEC0kCOBL38tbZHrNasb82XQO4OKuJ6SBywlifRmLwOEPYmXalnHyZVCIy0SaW0PAjiBR0mzo1Dnd%2bmmpAHrpRzwV7YOniLCkSrmHAiLgOcUWeIg8IChe3I/XLEDopetuoDHWL54QZ4rVkBLz5HHMg6n6KST1KFpbMy5RG0notRZ0qTCBnQ3j%2b8KgNGVRkONesfHEITwlzKbWnAZpq5450sWw/yFNeDFC/PTxvsGcHQhzVz2EitbeIwIVakiLYuWJsFFVRp1o%2bRvZOkZhaTlJdjzeVuk7xtcDAKwj5Lmao/s8iyarj6QUC).
 
 2. Run the preprocesing script:
 
@@ -81,7 +81,7 @@ Once you have an input terrain in hdf5 format, you will also need a configuratio
 
 In order to run the simulation with the previously generated images:
 
-1. Update the configuration in both the inputfolder field to point to the path of the hdf5 panorama.
+1. Update the configuration file in the inputfolder field to point to the path of the hdf5 panorama.
 2. Run the following command:
 
     `python main.py -c conf/example1.yaml `
@@ -114,17 +114,28 @@ In order to run the simulation with the previously generated images:
 
 \* The trajectory name can either be one of ['lisajous', 'squircle', 'sin2', 'layp'] or the path to a csv file with containing the poses in *x, y* pairs or *x,y,theta* triplets. Examples of these files can be found on the data folder. The poses in these files need to be given in pixel coordinates relative to the upper-left corner of the panorama.
 
-** The list of augmenters consists of a list of dictionaries, in which each dictionary corresponds to an augmenter in the imgaug library.
-
+** The list of augmenters consists of a list of dictionaries, in which each dictionary corresponds to an augmenter in the [imgaug library](https://imgaug.readthedocs.io/en/latest/source/api.html). Each dictionary must have the name of the augmenter in the _augmenter_ key and the parameters as keyword arguments. For example
+a gaussian blur that has random sigma values from the set {1, 3, 9} is specified as {augmenter: GaussianBlur, sigma: [1, 3, 9]} in the augmenter list.
 
 ## Running a simulation with augmentation
 
 
+In order to run the simulation with augmentation:
 
+1. Set the augmentation field in the example configuration file to *True*.
+2. Run the following command:
+
+    `python main.py -c conf/example1.yaml `
+
+In this case, we apply two augmenters. The first one is a Gamma contrast augmenter that chooses the gamma value randomly between 0.7, 0.8 and 0.9. The second augmenter is a Gaussian blur one that chooses a sigma value randomly between 1, 3, and 9. 
+
+## Post-processing
+
+For post-processing, we recommend using the [evo](https://github.com/MichaelGrupp/evo) post-processor for comparing the groundtruth provided by Simslam 2D and the trajectory estimated by the SLAM algorithm. Note our trajectory is in kitti format.
 
 # Citation
 
-If this program has helped you in you please consider citing it:
+If this program has helped you please consider citing it:
 
 ```latex
 @inproceedings{rodriguez2019simslam,
