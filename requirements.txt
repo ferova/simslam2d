@@ -1,0 +1,9 @@
+numpy
+matplotlib
+opencv-python
+opencv-contrib-python
+scipy
+Pillow
+h5py
+tqdmconda
+pyyaml

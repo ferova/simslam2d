@@ -1,0 +1,36 @@
+# Simslam2d example conf file.
+
+# Input image folder
+inputfile: 'data/granite.hdf5'
+
+# Save Images
+saveimages: False
+
+# Image output folder
+outputfolder: 'data/example1/images/'
+
+# Trajectory output name
+
+trajname: 'data/example1/trajectory.txt'
+
+# Loading area
+load_area.x: 2000
+load_area.y: 2000
+
+# Cropping area
+crop_area.x: 640
+crop_area.y: 480
+
+# Trajectory
+trajectory.name: 'lisajous'
+trajectory.res: 1000
+
+# Plotting
+plot.traj: False
+plot.croparea: True
+plot.crop: True
+
+# Augmenters: 
+augmentation: False
+
+augmenters: [{augmenter: GammaContrast, gamma: [0.7, 0.6, 0.8], per_channel: False}, {augmenter: GaussianBlur, sigma: [1, 3, 9]}]

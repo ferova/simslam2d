@@ -123,4 +123,19 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Databases
+
 databases/
+data/*
+algorithms/
+
+# Images
+*.hdf5
+*.bmp
+*.BMP
+*.tiff
+*.png
+
+.idea/
+
+include/
