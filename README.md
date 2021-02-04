@@ -67,11 +67,11 @@ Here, the inputfile is a panoramic image of the terrain. For example, calling
 
 #### Example
 
-1. Download the example panorama [here](https://public.dm.files.1drv.com/y4mzpmiD9_bBWSCUKqTvMtTVIEMvzy4YziHzN7aT5NRu7-An6z5OJYNTHQKBYeHbpQ4av1JxcAKLIyCDcOFS2gSSopAnPl7WZ3RQoDFW9dRIBaFiRaqB8Y3NegDXPwmXYttrkKH8dcreOj0xs5MZFWRpvTetIAO9cIsHub4RwXIgeS0EHHJmTQQxPjORf8YIGa-ofQDQrrsOeelgDT1UQJWLWnN38ij88K5cFpnQbUuh7A?access_token=EwAAA61DBAAUmcDj0azQ5tf1lkBfAvHLBzXl5ugAAe79Gz5ei%2bQ5HHJ%2bCxrhF/X949gpNWnRX9jt3HFra8QI1u82m9%2bRjLow%2bIVyPmAIR3/Ke5iNH%2bHcwWuZjkNanffYHqUWekrXesoKCdvrXcx2RwBQQCYVbjDusq9y0RRS0oz5iShjkAd7joTVQ%2bBKtYoMMkpr2F629iRGZMn3FFjNR%2bGsHd21qA%2bTg8cM7II2POlsfV/yhZCh1/fyttcH%2bYWeU8x17E4CQzJXAN7LYCswKg5N/WwAT%2bmlIVx0I3rwxIkPDYkINX9zrUbx8HeF0zXfjjluvejiUBnapeJafMAM9JZmieThfc1L8IjcHEIA3favwLeWkj5ondHEqZ87UxoDZgAACMoXioJdXlsI0AHAPSPyl9mu/qPWQuhZ9fWFk6VbsW3oAbeMXRSfmogp65yjB/5S453Lznc9PjE/%2bVIa5ecz7OjXJkn9OU1ilkVfhntKNQ8YWI/ZAbmijbHshRTLDY628Tgj12a3eDLHql4C/lTRBzi%2bOdkNM0sa04N56HUTEo/CnWiozAgc3cP69ff35n/GOO%2b6%2bo/6ZJZhbJPzCkzgHpozplDum2eBM5rOE0Hhq2tuEGJBEjTZU8zUfwJnm6JQiNe1wSGftgaKf3oBja37OgdUXCh4NCOiN1S7heN5l8geFC6Yl776SpKHkPLt1C8fwutoCWNEC0kCOBL38tbZHrNasb82XQO4OKuJ6SBywlifRmLwOEPYmXalnHyZVCIy0SaW0PAjiBR0mzo1Dnd%2bmmpAHrpRzwV7YOniLCkSrmHAiLgOcUWeIg8IChe3I/XLEDopetuoDHWL54QZ4rVkBLz5HHMg6n6KST1KFpbMy5RG0notRZ0qTCBnQ3j%2b8KgNGVRkONesfHEITwlzKbWnAZpq5450sWw/yFNeDFC/PTxvsGcHQhzVz2EitbeIwIVakiLYuWJsFFVRp1o%2bRvZOkZhaTlJdjzeVuk7xtcDAKwj5Lmao/s8iyarj6QUC).
+1. Download the example panorama [here](https://drive.google.com/uc?export=download&id=1VGKm3iKqvPX6j75ADiIrq6D-YO4aWV_T).
 
 2. Run the preprocesing script:
 
-    `python simslam2d/im2hdf5.py -i 'data/_MG_7576_stitch.png' -o data/concrete.hdf5`
+    `python simslam2d/im2hdf5.py -i 'data/MVI_7756_stitch.png' -o data/concrete.hdf5`
 
 This will create a terrain file suitable for use with Simslam 2D.
 
